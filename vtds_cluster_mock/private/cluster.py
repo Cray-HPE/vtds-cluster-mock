@@ -388,6 +388,9 @@ class Cluster(ClusterAPI):
         for _, node_class in node_classes.items():
             self.__add_mac_addresses(node_class)
 
+    def consolidate(self):
+        return
+
     def prepare(self):
         self.provider_api = self.stack.get_provider_api()
         self.__add_host_blade_net()
