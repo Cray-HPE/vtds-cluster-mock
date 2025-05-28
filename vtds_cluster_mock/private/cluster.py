@@ -27,7 +27,8 @@ from random import randint
 from ipaddress import IPv4Network
 from vtds_base import (
     ContextualError,
-    info_msg
+    info_msg,
+    expand_inheritance
 )
 from vtds_base.layers.cluster import (
     ClusterAPI
@@ -185,7 +186,7 @@ class Cluster(ClusterAPI):
                 "'address_families' section" % self.__net_name(network)
             )
         candidates = [
-            addr_families
+            addr_family
             for _, addr_family in addr_families.items()
             if addr_family.get('family', None) == family
         ]
@@ -316,6 +317,7 @@ class Cluster(ClusterAPI):
                 # classes since they have no parents, and they aren't
                 # used for deployment.
                 continue
+            expanded_config = expand_inheritance(node_classes, key)
             expanded_config = self.__clean_deleted_interfaces(expanded_config)
             expanded_config = self.__clean_deleted_disks(expanded_config)
             node_classes[key] = expanded_config
