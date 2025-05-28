@@ -43,6 +43,7 @@ cluster:
         # The IPv4 CIDR of the network
         cidr: 10.234.0.0/16
     non_cluster: true
+    blade_interconnect: mock_interconnect
   # The 'networks' section defines virtual networks to be deployed to
   # construct the cluster. The example network shown here is meant to
   # be illutrative, but will not show up in your configuration. An
@@ -69,6 +70,7 @@ cluster:
           # The IPv4 CIDR of the network
           cidr: 10.254.0.0/16
       non_cluster: False
+      blade_interconnect: mock_interconnect
   node_classes:
     ubuntu_24_04_node:
       # The 'node_count' field indicates how many nodes of this type
