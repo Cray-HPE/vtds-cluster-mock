@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright [2024] Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024-2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -27,7 +27,8 @@ from random import randint
 from ipaddress import IPv4Network
 from vtds_base import (
     ContextualError,
-    info_msg
+    info_msg,
+    expand_inheritance
 )
 from vtds_base.layers.cluster import (
     ClusterAPI
@@ -173,31 +174,31 @@ class Cluster(ClusterAPI):
             )
         return netname
 
-    def __get_l3_config(self, network, family):
-        """Look up the L3 configuration for the specified address
-        family in the specified network.
+    def __get_addr_family(self, network, family):
+        """Look up the address family configuration for the specified
+        address family in the specified network.
 
         """
-        l3_configs = network.get('l3_configs', None)
-        if l3_configs is None:
+        addr_families = network.get('address_families', None)
+        if addr_families is None:
             raise ContextualError(
                 "configuration error: network '%s' has no "
-                "'l3_configs' section" % self.__net_name(network)
+                "'address_families' section" % self.__net_name(network)
             )
         candidates = [
-            l3_config
-            for _, l3_config in l3_configs.items()
-            if l3_config.get('family', None) == family
+            addr_family
+            for _, addr_family in addr_families.items()
+            if addr_family.get('family', None) == family
         ]
         if not candidates:
             raise ContextualError(
                 "configuration error: network '%s' has no "
-                "%s L3 configuration" % (self.__net_name(network), family)
+                "%s address family" % (self.__net_name(network), family)
             )
         if len(candidates) > 1:
             raise ContextualError(
                 "configuration error: network '%s' has more than one "
-                "%s L3 configuration" % (self.__net_name(network), family)
+                "%s address family" % (self.__net_name(network), family)
             )
         return candidates[0]
 
@@ -206,11 +207,11 @@ class Cluster(ClusterAPI):
         there is none.
 
         """
-        l3_config = self.__get_l3_config(network, 'AF_INET')
-        cidr = l3_config.get('cidr', None)
+        addr_family = self.__get_addr_family(network, 'AF_INET')
+        cidr = addr_family.get('cidr', None)
         if cidr is None:
             raise ContextualError(
-                "configuration error: AF_INET L3 configuration for "
+                "configuration error: AF_INET address family for "
                 "network '%s' has no 'cidr' specified" %
                 self.__net_name(network)
             )
@@ -255,8 +256,8 @@ class Cluster(ClusterAPI):
             )
         # Connect the host_blade_network to all blades of all classes.
         blade_classes = virtual_blades.blade_classes()
-        l3_config = self.__get_l3_config(host_blade_network, 'AF_INET')
-        l3_config['connected_blades'] = [
+        addr_family = self.__get_addr_family(host_blade_network, 'AF_INET')
+        addr_family['connected_blades'] = [
             {
                 'blade_class': blade_class,
                 'blade_instances': [
@@ -316,6 +317,7 @@ class Cluster(ClusterAPI):
                 # classes since they have no parents, and they aren't
                 # used for deployment.
                 continue
+            expanded_config = expand_inheritance(node_classes, key)
             expanded_config = self.__clean_deleted_interfaces(expanded_config)
             expanded_config = self.__clean_deleted_disks(expanded_config)
             node_classes[key] = expanded_config

@@ -36,9 +36,14 @@ cluster:
     delete: false
     # The name of the Virtual Network
     network_name: hostbladenet
-    # The IPv4 CIDR of the network
-    ipv4_cidr: 10.234.0.0/16
+    address_families:
+      ipv4:
+        # The 'family' being configured
+        family: 'AF_INET'
+        # The IPv4 CIDR of the network
+        cidr: 10.234.0.0/16
     non_cluster: true
+    blade_interconnect: mock_interconnect
   # The 'networks' section defines virtual networks to be deployed to
   # construct the cluster. The example network shown here is meant to
   # be illutrative, but will not show up in your configuration. An
@@ -58,9 +63,14 @@ cluster:
       delete: false
       # The name of the Virtual Network
       network_name: examplenet
-      # The IPv4 CIDR of the network
-      ipv4_cidr: 10.254.0.0/16
+      address_families:
+        ipv4:
+          # The 'family' being configured
+          family: 'AF_INET'
+          # The IPv4 CIDR of the network
+          cidr: 10.254.0.0/16
       non_cluster: False
+      blade_interconnect: mock_interconnect
   node_classes:
     ubuntu_24_04_node:
       # The 'node_count' field indicates how many nodes of this type
@@ -136,9 +146,6 @@ cluster:
           # network. If it is an empty string or unspecified, the
           # node hostname will be used unmodified on this network.
           hostname_suffix: "-noncluster"
-          
-
-
       virtual_machine:
         # The 'architecture' field specifies the CPU architecture of
         # the Virtual Node. If it is null, the architecture of the
