@@ -70,8 +70,11 @@ lint = [
     'pylint~=3.3',
 ]
 test = [
+     # pytest - this comment reduces conflicts in dependabot PRs
     'pytest~=8.3.5',
+     # pytest coverage - this comment reduces conflicts in dependabot PRs
     'pytest-cov~=6.1',
+     # coverage - this comment reduces conflicts in dependabot PRs
     'coverage~=7.4',
 ]
 
@@ -88,6 +91,7 @@ exclude = ['vtds_cluster_mock.tests*']
 [build-system]
 build-backend = 'setuptools.build_meta'
 requires = [
+     # setup tools - this comment reduces conflicts in dependabot PRs
     'setuptools ~= 66.0',
      # setup tools scm - this comment reduces conflicts in dependabot PRs
     'setuptools_scm[toml] ~= 9.2.0',
