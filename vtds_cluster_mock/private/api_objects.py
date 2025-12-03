@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright [2024] Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024-2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -76,6 +76,9 @@ class VirtualNodes(VirtualNodesBase):
 
     def node_hostname(self, node_class, instance, network_name=None):
         return self.common.node_hostname(node_class, instance, network_name)
+
+    def node_host_blade_info(self, node_class):
+        return self.common.node_host_blade_info(node_class)
 
     def node_ipv4_addr(self, node_class, instance, network_name):
         return self.common.node_ipv4_addr(node_class, instance, network_name)
@@ -194,6 +197,10 @@ class VirtualNetworks(VirtualNetworksBase):
     def non_cluster_network(self, network_name):
         network = self.__network_by_name(network_name)
         return network.get('non_cluster', False)
+
+    def blade_interconnect(self, network_name):
+        network = self.__network_by_name(network_name)
+        return network.get('blade_interconnect', None)
 
     def blade_class_addressing(self, blade_class, network_name):
         network = self.__network_by_name(network_name)
