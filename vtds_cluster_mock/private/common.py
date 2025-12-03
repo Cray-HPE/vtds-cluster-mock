@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright [2024] Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024-2025 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -271,6 +271,17 @@ class Common:
         host_blade_class = self.__host_blade_class(node_class)
         virtual_blades = self.stack.get_provider_api().get_virtual_blades()
         return virtual_blades.blade_ssh_key_paths(host_blade_class)
+
+    def node_host_blade_info(self, node_class):
+        """Return the information about the host Virtual Blade on which the
+        specified node lives.
+
+        """
+        instance_capacity = self.__host_blade_instance_capacity(node_class)
+        return {
+            'blade_class': self.__host_blade_class(node_class),
+            'instance_capacity': instance_capacity
+        }
 
     def node_host_blade(self, node_class, instance):
         """Get a tuple containing the the blade class and instance
